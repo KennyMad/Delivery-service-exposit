@@ -8,12 +8,8 @@ import com.company.repository.StoreDAO;
 import com.company.repository.impl.CustomerDAOImpl;
 import com.company.repository.impl.OrderDAOImpl;
 import com.company.repository.impl.StoreDAOImpl;
-import com.company.service.CustomerService;
-import com.company.service.OrderService;
-import com.company.service.StoreService;
-import com.company.service.impl.CustomerServiceImpl;
-import com.company.service.impl.OrderServiceImpl;
-import com.company.service.impl.StoreServiceImpl;
+import com.company.service.*;
+import com.company.service.impl.*;
 import com.company.ui.builder.MenuBuilder;
 import com.company.ui.builder.impl.ConsoleMenuBuilder;
 import com.company.ui.controller.MenuController;
@@ -28,15 +24,20 @@ public class Context {
     private CustomerService customerService;
     private OrderService orderService;
     private StoreService storeService;
+    private ProductService productService;
+
+    private FileService fileService;
 
     private MenuController menuController;
 
     private Facade facade;
 
     public void initialize(){
-        customerDAO = new CustomerDAOImpl();
-        orderDAO = new OrderDAOImpl();
-        storeDAO = new StoreDAOImpl();
+        fileService = new FileServiceImpl();
+
+        customerDAO = new CustomerDAOImpl(fileService);
+        orderDAO = new OrderDAOImpl(fileService);
+        storeDAO = new StoreDAOImpl(fileService);
 
         customerDAO.initialize();
         orderDAO.initialize();
@@ -45,8 +46,9 @@ public class Context {
         customerService = new CustomerServiceImpl(customerDAO);
         orderService = new OrderServiceImpl(customerDAO, orderDAO);
         storeService = new StoreServiceImpl(storeDAO);
+        productService = new ProductServiceImpl(storeDAO);
 
-        facade = new FacadeImpl(customerService,orderService, storeService);
+        facade = new FacadeImpl(customerService,orderService, storeService,productService);
 
         MenuBuilder menuBuilder = new ConsoleMenuBuilder(facade);
         menuController = new MenuControllerImpl(menuBuilder.createMenu());

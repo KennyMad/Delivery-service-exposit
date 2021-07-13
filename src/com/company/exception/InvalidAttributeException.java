@@ -2,7 +2,7 @@ package com.company.exception;
 
 public class InvalidAttributeException extends Exception{
 
-    private String attribute;
+    private final String attribute;
 
     public InvalidAttributeException (String attribute){
         super("Attribute " + attribute + " does not exist.");

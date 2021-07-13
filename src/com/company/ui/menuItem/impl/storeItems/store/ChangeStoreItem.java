@@ -1,5 +1,6 @@
 package com.company.ui.menuItem.impl.storeItems.store;
 
+import com.company.exception.SaveDataException;
 import com.company.exception.WrongIdException;
 import com.company.facade.Facade;
 import com.company.ui.menuItem.MenuItem;
@@ -42,8 +43,8 @@ public class ChangeStoreItem implements MenuItem {
         catch (InputMismatchException mismatchException){
             System.out.println("Invalid input.");
         }
-        catch (WrongIdException idException){
-            System.out.println(idException.getMessage());
+        catch (WrongIdException | SaveDataException exception){
+            System.out.println(exception.getMessage());
         }
     }
 }

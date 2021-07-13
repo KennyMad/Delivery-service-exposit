@@ -1,14 +1,16 @@
 package com.company.repository.impl;
 
+import com.company.constants.Constants;
+import com.company.exception.LoadDataException;
+import com.company.exception.SaveDataException;
 import com.company.exception.WrongIdException;
 import com.company.models.Customer;
 import com.company.repository.CustomerDAO;
-import com.google.gson.Gson;
+import com.company.service.FileService;
 import com.google.gson.reflect.TypeToken;
 
 
 import java.io.*;
-import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,37 +19,30 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     private Map<Integer, Customer> customerMap;
 
-    @Override
-    public void initialize(){
-        Gson gson = new Gson();
+    private final FileService fileService;
 
-        String jsonCustomers = "";
-        String s = "";
-        try (BufferedReader reader = new BufferedReader(new FileReader("customer.json"))){
-            while ((s = reader.readLine()) != null)
-                jsonCustomers += s;
-
-            Type collectionType = new TypeToken<HashMap<Integer,Customer>>(){}.getType();
-            customerMap = gson.fromJson(jsonCustomers,collectionType);
-        }
-        catch (FileNotFoundException exception){
-            customerMap = new HashMap<>();
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-
+    public CustomerDAOImpl(FileService fileService){
+        this.fileService = fileService;
     }
 
     @Override
-    public void save(){
-        Gson gson = new Gson();
+    public void initialize(){
+        try {
+            customerMap = (HashMap) fileService.load(Constants.CUSTOMERS_FILE, new TypeToken<HashMap<Integer, Customer>>() {
+            }.getType());
+        }
+        catch (FileNotFoundException exception){
+            customerMap = new HashMap<>();
+        }
+        catch (LoadDataException loadException){
+            customerMap = new HashMap<>();
+            loadException.printStackTrace();
+        }
+    }
 
-        try (FileWriter writer = new FileWriter("customer.json")){
-            writer.write(gson.toJson(customerMap));
-        }
-        catch (IOException exception){
-            System.out.println(exception.fillInStackTrace());
-        }
+    @Override
+    public void save() throws SaveDataException {
+        fileService.save(Constants.CUSTOMERS_FILE, customerMap);
     }
 
     @Override

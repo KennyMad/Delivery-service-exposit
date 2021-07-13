@@ -1,5 +1,6 @@
 package com.company.service.impl;
 
+import com.company.exception.SaveDataException;
 import com.company.exception.WrongIdException;
 import com.company.models.Order;
 import com.company.models.OrderAddress;
@@ -23,7 +24,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void createOrder(int customerId, HashMap<Integer, List<Product>> productsByStoreId, OrderAddress orderAddress) throws WrongIdException {
+    public void createOrder(int customerId, HashMap<Integer, List<Product>> productsByStoreId, OrderAddress orderAddress) throws WrongIdException, SaveDataException {
         Order order = new Order();
         order.setId(orderDAO.getFreeId());
         order.setCustomer(customerDAO.read(customerId));

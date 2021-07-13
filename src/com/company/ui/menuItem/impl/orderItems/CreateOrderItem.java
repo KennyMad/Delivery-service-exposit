@@ -1,10 +1,10 @@
 package com.company.ui.menuItem.impl.orderItems;
 
+import com.company.exception.SaveDataException;
 import com.company.exception.WrongIdException;
 import com.company.facade.Facade;
 import com.company.models.OrderAddress;
 import com.company.models.Product;
-import com.company.models.ProductCategory;
 import com.company.ui.menuItem.MenuItem;
 
 import java.util.*;
@@ -54,8 +54,8 @@ public class CreateOrderItem implements MenuItem {
         catch (InputMismatchException | IndexOutOfBoundsException | NumberFormatException mismatchException){
             System.out.println("Invalid input.");
         }
-        catch (WrongIdException idException){
-            System.out.println(idException.getMessage());
+        catch (WrongIdException | SaveDataException exception){
+            System.out.println(exception.getMessage());
         }
     }
 

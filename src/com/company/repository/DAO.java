@@ -1,7 +1,7 @@
 package com.company.repository;
 
+import com.company.exception.SaveDataException;
 import com.company.exception.WrongIdException;
-import com.company.models.Store;
 
 import java.util.Collection;
 
@@ -9,7 +9,7 @@ public interface DAO <T> {
 
     void initialize();
 
-    void save();
+    void save() throws SaveDataException;
 
     Collection<T> readAll();
 

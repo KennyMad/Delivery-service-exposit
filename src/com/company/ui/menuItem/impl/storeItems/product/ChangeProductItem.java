@@ -1,5 +1,6 @@
 package com.company.ui.menuItem.impl.storeItems.product;
 
+import com.company.exception.SaveDataException;
 import com.company.exception.WrongIdException;
 import com.company.facade.Facade;
 import com.company.models.ProductCategory;
@@ -52,7 +53,7 @@ public class ChangeProductItem implements MenuItem {
         catch (InputMismatchException mismatchException){
             System.out.println("Invalid input.");
         }
-        catch (WrongIdException exception){
+        catch (WrongIdException | SaveDataException exception){
             System.out.println(exception.getMessage());
         }
     }

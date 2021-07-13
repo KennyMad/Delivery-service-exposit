@@ -1,13 +1,15 @@
 package com.company.repository.impl;
 
+import com.company.constants.Constants;
+import com.company.exception.LoadDataException;
+import com.company.exception.SaveDataException;
 import com.company.exception.WrongIdException;
 import com.company.models.Order;
 import com.company.repository.OrderDAO;
-import com.google.gson.Gson;
+import com.company.service.FileService;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
-import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,36 +18,30 @@ public class OrderDAOImpl implements OrderDAO {
 
     Map<Integer,Order> orderMap;
 
+    private final FileService fileService;
+
+    public OrderDAOImpl(FileService fileService){
+        this.fileService = fileService;
+    }
+
     @Override
-    public void initialize() {
-        Gson gson = new Gson();
-
-        String jsonCustomers = "";
-        String s = "";
-        try (BufferedReader reader = new BufferedReader(new FileReader("orders.json"))){
-            while ((s = reader.readLine()) != null)
-                jsonCustomers += s;
-
-            Type collectionType = new TypeToken<HashMap<Integer, Order>>(){}.getType();
-            orderMap = gson.fromJson(jsonCustomers,collectionType);
+    public void initialize(){
+        try {
+            orderMap = (HashMap) fileService.load(Constants.ORDERS_FILE, new TypeToken<HashMap<Integer, Order>>() {
+            }.getType());
         }
         catch (FileNotFoundException exception){
             orderMap = new HashMap<>();
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        }
+        catch (LoadDataException loadException){
+            orderMap = new HashMap<>();
+            loadException.printStackTrace();
         }
     }
 
     @Override
-    public void save() {
-        Gson gson = new Gson();
-
-        try (FileWriter writer = new FileWriter("orders.json")){
-            writer.write(gson.toJson(orderMap));
-        }
-        catch (IOException exception){
-            System.out.println(exception.fillInStackTrace());
-        }
+    public void save() throws SaveDataException {
+        fileService.save(Constants.ORDERS_FILE, orderMap);
     }
 
     @Override

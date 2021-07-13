@@ -1,14 +1,15 @@
 package com.company.repository.impl;
 
+import com.company.constants.Constants;
+import com.company.exception.LoadDataException;
+import com.company.exception.SaveDataException;
 import com.company.exception.WrongIdException;
-import com.company.models.Customer;
 import com.company.models.Store;
 import com.company.repository.StoreDAO;
-import com.google.gson.Gson;
+import com.company.service.FileService;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
-import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,36 +18,30 @@ public class StoreDAOImpl implements StoreDAO {
 
     private Map<Integer, Store> storeMap;
 
+    private final FileService fileService;
+
+    public StoreDAOImpl(FileService fileService){
+        this.fileService = fileService;
+    }
+
     @Override
     public void initialize(){
-        Gson gson = new Gson();
-
-        String jsonStore = "";
-        String s = "";
-        try (BufferedReader reader = new BufferedReader(new FileReader("store.json"))){
-            while ((s = reader.readLine()) != null)
-                jsonStore += s;
-
-            Type collectionType = new TypeToken<HashMap<Integer, Store>>(){}.getType();
-            storeMap = gson.fromJson(jsonStore,collectionType);
+        try {
+            storeMap = (HashMap) fileService.load(Constants.STORE_FILE, new TypeToken<HashMap<Integer, Store>>() {
+            }.getType());
         }
         catch (FileNotFoundException exception){
             storeMap = new HashMap<>();
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        }
+        catch (LoadDataException loadException){
+            storeMap = new HashMap<>();
+            loadException.printStackTrace();
         }
     }
 
     @Override
-    public void save(){
-        Gson gson = new Gson();
-
-        try (FileWriter writer = new FileWriter("store.json")){
-            writer.write(gson.toJson(storeMap));
-        }
-        catch (IOException exception){
-            exception.fillInStackTrace();
-        }
+    public void save() throws SaveDataException {
+        fileService.save(Constants.STORE_FILE, storeMap);
     }
 
     @Override

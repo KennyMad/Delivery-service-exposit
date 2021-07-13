@@ -1,6 +1,6 @@
 package com.company.ui.menuItem.impl.customerItems;
 
-import com.company.exception.WrongIdException;
+import com.company.exception.SaveDataException;
 import com.company.facade.Facade;
 import com.company.ui.menuItem.MenuItem;
 
@@ -39,6 +39,9 @@ public class RegisterCustomerItem implements MenuItem {
         }
         catch (InputMismatchException mismatchException){
             System.out.println("Invalid input.");
+        }
+        catch (SaveDataException exception){
+            System.out.println(exception.getMessage());
         }
     }
 }

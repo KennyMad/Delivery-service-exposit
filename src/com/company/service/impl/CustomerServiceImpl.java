@@ -1,5 +1,6 @@
 package com.company.service.impl;
 
+import com.company.exception.SaveDataException;
 import com.company.exception.WrongIdException;
 import com.company.models.Customer;
 import com.company.repository.CustomerDAO;
@@ -16,7 +17,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void addCustomer(String name, String additionalInformation) {
+    public void addCustomer(String name, String additionalInformation) throws SaveDataException {
         Customer customer = new Customer();
         customer.setId(customerDao.getFreeId());
         customer.setName(name);
@@ -27,14 +28,14 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void deleteCustomer(int id) throws WrongIdException{
+    public void deleteCustomer(int id) throws WrongIdException, SaveDataException {
             customerDao.remove(id);
 
             customerDao.save();
     }
 
     @Override
-    public void updateCustomer(String name, String additionalInformation, int id) throws WrongIdException{
+    public void updateCustomer(String name, String additionalInformation, int id) throws WrongIdException, SaveDataException {
         Customer customer = customerDao.read(id);
         customer.setName(name);
         customer.setAdditionalInformation(additionalInformation);

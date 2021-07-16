@@ -24,7 +24,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void createOrder(int customerId, HashMap<Integer, List<Product>> productsByStoreId, OrderAddress orderAddress) throws WrongIdException, SaveDataException {
+    public void add(int customerId, HashMap<Integer, List<Product>> productsByStoreId, OrderAddress orderAddress) throws WrongIdException, SaveDataException {
         Order order = new Order();
         order.setId(orderDAO.getFreeId());
         order.setCustomer(customerDAO.read(customerId));

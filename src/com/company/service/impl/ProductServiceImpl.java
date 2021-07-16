@@ -23,7 +23,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void addProduct(int storeId, String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException, SaveDataException {
+    public void add(int storeId, String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException, SaveDataException {
         Product product = new Product();
         product.setName(name);
         product.setDescription(description);
@@ -38,14 +38,14 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public void deleteProduct(int storeId, int productId) throws WrongIdException, SaveDataException {
+    public void delete(int storeId, int productId) throws WrongIdException, SaveDataException {
         storeDao.read(storeId).getProductList().remove(productId);
 
         storeDao.save();
     }
 
     @Override
-    public void updateProduct(int storeId, int productId, String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException, SaveDataException {
+    public void update(int storeId, int productId, String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException, SaveDataException {
         Product product = storeDao.read(storeId).getProductList().get(productId);
         product.setName(name);
         product.setDescription(description);

@@ -31,17 +31,17 @@ public class FacadeImpl implements Facade {
 
     @Override
     public void registerCustomer(String name, String additionalInformation) throws SaveDataException {
-        customerService.addCustomer(name, additionalInformation);
+        customerService.add(name, additionalInformation);
     }
 
     @Override
     public void deleteCustomer(int id) throws WrongIdException, SaveDataException {
-        customerService.deleteCustomer(id);
+        customerService.delete(id);
     }
 
     @Override
     public void updateCustomer(String name, String additionalInformation, int id) throws WrongIdException, SaveDataException {
-        customerService.updateCustomer(name, additionalInformation, id);
+        customerService.update(name, additionalInformation, id);
     }
 
     @Override
@@ -51,17 +51,17 @@ public class FacadeImpl implements Facade {
 
     @Override
     public void registerStore(String name, String description) throws SaveDataException {
-        storeService.addStore(name, description);
+        storeService.add(name, description);
     }
 
     @Override
     public void deleteStore(int id) throws WrongIdException, SaveDataException {
-        storeService.deleteStore(id);
+        storeService.delete(id);
     }
 
     @Override
     public void updateStore(String name, String description, int id) throws WrongIdException, SaveDataException {
-        storeService.updateStore(name, description, id);
+        storeService.update(name, description, id);
     }
 
     @Override
@@ -71,17 +71,17 @@ public class FacadeImpl implements Facade {
 
     @Override
     public void addProduct(int storeId, String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException, SaveDataException {
-        productService.addProduct(storeId, name, description, amount, price, categories);
+        productService.add(storeId, name, description, amount, price, categories);
     }
 
     @Override
     public void deleteProduct(int storeId, int productId) throws WrongIdException, SaveDataException {
-        productService.deleteProduct(storeId, productId);
+        productService.delete(storeId, productId);
     }
 
     @Override
     public void updateProduct(int storeId, int productId, String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException, SaveDataException {
-        productService.updateProduct(storeId, productId, name, description, amount, price, categories);
+        productService.update(storeId, productId, name, description, amount, price, categories);
     }
 
     @Override
@@ -111,7 +111,7 @@ public class FacadeImpl implements Facade {
 
     @Override
     public void createOrder(int customerId, HashMap<Integer, List<Product>> productsByStoreId, OrderAddress orderAddress) throws WrongIdException, SaveDataException {
-        orderService.createOrder(customerId, productsByStoreId, orderAddress);
+        orderService.add(customerId, productsByStoreId, orderAddress);
     }
 
     @Override

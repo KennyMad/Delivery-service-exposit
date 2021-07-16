@@ -8,11 +8,11 @@ import java.util.Collection;
 
 public interface StoreService {
 
-    void addStore(String name,String description) throws SaveDataException;
+    void add(String name,String description) throws SaveDataException;
 
-    void deleteStore(int id) throws WrongIdException, SaveDataException;
+    void delete(int id) throws WrongIdException, SaveDataException;
 
-    void updateStore(String name, String description, int id) throws WrongIdException, SaveDataException;
+    void update(String name, String description, int id) throws WrongIdException, SaveDataException;
 
     Collection<Store> getStoreList();
 

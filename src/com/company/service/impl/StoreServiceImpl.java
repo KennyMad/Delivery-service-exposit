@@ -18,7 +18,7 @@ public class StoreServiceImpl implements StoreService {
 
 
     @Override
-    public void addStore(String name, String description) throws SaveDataException {
+    public void add(String name, String description) throws SaveDataException {
         Store store = new Store();
         store.setId(storeDao.getFreeStoreId());
         store.setProductList(new HashMap<>());
@@ -30,14 +30,14 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public void deleteStore(int id) throws WrongIdException, SaveDataException {
+    public void delete(int id) throws WrongIdException, SaveDataException {
         storeDao.remove(id);
 
         storeDao.save();
     }
 
     @Override
-    public void updateStore(String name, String description, int id) throws WrongIdException, SaveDataException {
+    public void update(String name, String description, int id) throws WrongIdException, SaveDataException {
         Store store = storeDao.read(id);
         store.setName(name);
         store.setDescription(description);

@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface OrderService {
 
-    void createOrder(int customerId, HashMap<Integer, List<Product>> productsByStoreId, OrderAddress orderAddress) throws WrongIdException, SaveDataException;
+    void add(int customerId, HashMap<Integer, List<Product>> productsByStoreId, OrderAddress orderAddress) throws WrongIdException, SaveDataException;
 
     Collection<Order> getOrderList();
 

@@ -13,11 +13,12 @@ import com.google.gson.reflect.TypeToken;
 import java.io.*;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CustomerDAOImpl implements CustomerDAO {
 
-    private Map<Integer, Customer> customerMap;
+    private List<Customer> customerList;
 
     private final FileService fileService;
 
@@ -27,49 +28,37 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     @Override
     public void initialize(){
-        try {
-            customerMap = (HashMap) fileService.load(Constants.CUSTOMERS_FILE, new TypeToken<HashMap<Integer, Customer>>() {
-            }.getType());
-        }
-        catch (FileNotFoundException exception){
-            customerMap = new HashMap<>();
-        }
-        catch (LoadDataException loadException){
-            customerMap = new HashMap<>();
-            loadException.printStackTrace();
-        }
     }
 
     @Override
     public void save() throws SaveDataException {
-        fileService.save(Constants.CUSTOMERS_FILE, customerMap);
     }
 
     @Override
     public Collection readAll() {
-        return customerMap.values();
+        return customerList;
     }
 
     @Override
     public Customer getById(int id){
-        return customerMap.get(id);
+        return customerList.stream().filter(c -> c.getId() == id).limit(1).findFirst().get();
     }
 
     @Override
     public Customer remove(int id) {
-        return customerMap.remove(id);
+        Customer customer = getById(id);
+        if (customer != null)
+            customerList.remove(customer);
+        return customer;
     }
 
     @Override
     public void add(Customer customer) {
-        customerMap.put(customer.getId(),customer);
+        customerList.add(customer);
     }
 
     @Override
     public int getFreeId(){
-        int id = customerMap.size();
-        while (customerMap.containsKey(id))
-            id++;
-        return id;
+        return 0;
     }
 }

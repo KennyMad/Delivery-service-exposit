@@ -12,11 +12,12 @@ import com.google.gson.reflect.TypeToken;
 import java.io.*;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class OrderDAOImpl implements OrderDAO {
 
-    Map<Integer,Order> orderMap;
+    List<Order> orderList;
 
     private final FileService fileService;
 
@@ -26,50 +27,38 @@ public class OrderDAOImpl implements OrderDAO {
 
     @Override
     public void initialize(){
-        try {
-            orderMap = (HashMap) fileService.load(Constants.ORDERS_FILE, new TypeToken<HashMap<Integer, Order>>() {
-            }.getType());
-        }
-        catch (FileNotFoundException exception){
-            orderMap = new HashMap<>();
-        }
-        catch (LoadDataException loadException){
-            orderMap = new HashMap<>();
-            loadException.printStackTrace();
-        }
+
     }
 
     @Override
     public void save() throws SaveDataException {
-        fileService.save(Constants.ORDERS_FILE, orderMap);
     }
 
     @Override
     public Collection<Order> readAll() {
-        return orderMap.values();
+        return orderList;
     }
 
     @Override
     public Order getById(int id){
-        return orderMap.get(id);
-
+        return orderList.stream().filter(o -> o.getId() == id).limit(1).findFirst().get();
     }
 
     @Override
     public Order remove(int id) {
-        return orderMap.remove(id);
+        Order order = getById(id);
+        if (order != null)
+            orderList.remove(order);
+        return order;
     }
 
     @Override
     public void add(Order order) {
-        orderMap.put(order.getId(),order);
+        orderList.add(order);
     }
 
     @Override
     public int getFreeId() {
-        int id = orderMap.size();
-        while (orderMap.containsKey(id))
-            id++;
-        return id;
+        return 0;
     }
 }

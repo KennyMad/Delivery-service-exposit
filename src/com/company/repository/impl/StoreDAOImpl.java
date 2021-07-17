@@ -12,11 +12,12 @@ import com.google.gson.reflect.TypeToken;
 import java.io.*;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class StoreDAOImpl implements StoreDAO {
 
-    private Map<Integer, Store> storeMap;
+    private List<Store> storeList;
 
     private final FileService fileService;
 
@@ -26,57 +27,42 @@ public class StoreDAOImpl implements StoreDAO {
 
     @Override
     public void initialize(){
-        try {
-            storeMap = (HashMap) fileService.load(Constants.STORE_FILE, new TypeToken<HashMap<Integer, Store>>() {
-            }.getType());
-        }
-        catch (FileNotFoundException exception){
-            storeMap = new HashMap<>();
-        }
-        catch (LoadDataException loadException){
-            storeMap = new HashMap<>();
-            loadException.printStackTrace();
-        }
     }
 
     @Override
     public void save() throws SaveDataException {
-        fileService.save(Constants.STORE_FILE, storeMap);
     }
 
     @Override
     public Collection readAll() {
-        return storeMap.values();
+        return storeList;
     }
 
     @Override
     public Store getById(int id){
-        return storeMap.get(id);
+        return storeList.stream().filter(s -> s.getId() == id).limit(1).findFirst().get();
     }
 
     @Override
     public Store remove(int id) {
-        return storeMap.remove(id);
+        Store store = getById(id);
+        if (store != null)
+            storeList.remove(store);
+        return store;
     }
 
     @Override
     public void add(Store store) {
-        storeMap.put(store.getId(),store);
+        storeList.add(store);
     }
 
     @Override
     public int getFreeStoreId() {
-        int id = storeMap.size();
-        while (storeMap.containsKey(id))
-            id++;
-        return id;
+        return 0;
     }
 
     @Override
     public int getFreeProductId(int storeId) {
-        int id = storeMap.get(storeId).getProductList().size();
-        while (storeMap.get(storeId).getProductList().containsKey(id))
-            id++;
-        return id;
+        return 0;
     }
 }

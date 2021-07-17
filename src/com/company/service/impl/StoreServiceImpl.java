@@ -31,14 +31,17 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     public void delete(int id) throws WrongIdException, SaveDataException {
-        storeDao.remove(id);
+        if(storeDao.remove(id) == null)
+            throw new WrongIdException(id);
 
         storeDao.save();
     }
 
     @Override
     public void update(String name, String description, int id) throws WrongIdException, SaveDataException {
-        Store store = storeDao.read(id);
+        Store store = storeDao.getById(id);
+        if (store == null)
+            throw new WrongIdException(id);
         store.setName(name);
         store.setDescription(description);
 

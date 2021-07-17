@@ -50,19 +50,14 @@ public class OrderDAOImpl implements OrderDAO {
     }
 
     @Override
-    public Order read(int id) throws WrongIdException {
-        Order order = orderMap.get(id);
+    public Order getById(int id){
+        return orderMap.get(id);
 
-        if (order == null)
-            throw new WrongIdException(id);
-
-        return order;
     }
 
     @Override
-    public void remove(int id) throws WrongIdException{
-        if(orderMap.remove(id) == null)
-            throw new WrongIdException(id);
+    public Order remove(int id) {
+        return orderMap.remove(id);
     }
 
     @Override

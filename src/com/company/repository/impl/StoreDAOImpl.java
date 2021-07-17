@@ -50,19 +50,13 @@ public class StoreDAOImpl implements StoreDAO {
     }
 
     @Override
-    public Store read(int id) throws WrongIdException {
-        Store store = storeMap.get(id);
-
-        if(store == null)
-            throw new WrongIdException(id);
-
-        return store;
+    public Store getById(int id){
+        return storeMap.get(id);
     }
 
     @Override
-    public void remove(int id) throws WrongIdException{
-        if(storeMap.remove(id) == null)
-            throw new WrongIdException(id);
+    public Store remove(int id) {
+        return storeMap.remove(id);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.company.service.impl;
 
 import com.company.exception.SaveDataException;
 import com.company.exception.WrongIdException;
+import com.company.models.Customer;
 import com.company.models.Order;
 import com.company.models.OrderAddress;
 import com.company.models.Product;
@@ -27,7 +28,13 @@ public class OrderServiceImpl implements OrderService {
     public void add(int customerId, HashMap<Integer, List<Product>> productsByStoreId, OrderAddress orderAddress) throws WrongIdException, SaveDataException {
         Order order = new Order();
         order.setId(orderDAO.getFreeId());
-        order.setCustomer(customerDAO.read(customerId));
+
+        Customer customer = customerDAO.getById(customerId);
+
+        if (customer == null)
+            throw new WrongIdException(customerId);
+
+        order.setCustomer(customer);
         order.setProductsByStoreId(productsByStoreId);
         order.setOrderAddress(orderAddress);
         orderDAO.add(order);

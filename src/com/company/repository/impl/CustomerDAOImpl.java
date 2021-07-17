@@ -51,17 +51,13 @@ public class CustomerDAOImpl implements CustomerDAO {
     }
 
     @Override
-    public Customer read(int id) throws WrongIdException{
-        Customer customer = customerMap.get(id);
-        if (customer == null)
-            throw new WrongIdException(id);
-        return customer;
+    public Customer getById(int id){
+        return customerMap.get(id);
     }
 
     @Override
-    public void remove(int id) throws WrongIdException {
-        if (customerMap.remove(id) == null)
-            throw new WrongIdException(id);
+    public Customer remove(int id) {
+        return customerMap.remove(id);
     }
 
     @Override

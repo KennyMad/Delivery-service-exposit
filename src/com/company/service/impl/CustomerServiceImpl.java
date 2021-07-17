@@ -29,14 +29,19 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void delete(int id) throws WrongIdException, SaveDataException {
-            customerDao.remove(id);
+        if(customerDao.remove(id) == null)
+            throw new WrongIdException(id);
 
-            customerDao.save();
+        customerDao.save();
     }
 
     @Override
     public void update(String name, String additionalInformation, int id) throws WrongIdException, SaveDataException {
-        Customer customer = customerDao.read(id);
+        Customer customer = customerDao.getById(id);
+
+        if (customer == null)
+            throw new WrongIdException(id);
+
         customer.setName(name);
         customer.setAdditionalInformation(additionalInformation);
 

@@ -6,10 +6,6 @@ import java.util.Collection;
 
 public interface DAO <T> {
 
-    void initialize();
-
-    void save() throws SaveDataException;
-
     Collection<T> readAll();
 
     T getById(int id);

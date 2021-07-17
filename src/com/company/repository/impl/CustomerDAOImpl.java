@@ -1,37 +1,17 @@
 package com.company.repository.impl;
 
-import com.company.constants.Constants;
-import com.company.exception.LoadDataException;
-import com.company.exception.SaveDataException;
-import com.company.exception.WrongIdException;
 import com.company.models.Customer;
 import com.company.repository.CustomerDAO;
-import com.company.service.FileService;
-import com.google.gson.reflect.TypeToken;
 
 
-import java.io.*;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CustomerDAOImpl implements CustomerDAO {
 
     private List<Customer> customerList;
 
-    private final FileService fileService;
-
-    public CustomerDAOImpl(FileService fileService){
-        this.fileService = fileService;
-    }
-
-    @Override
-    public void initialize(){
-    }
-
-    @Override
-    public void save() throws SaveDataException {
+    public CustomerDAOImpl(List<Customer> customerList){
+        this.customerList = customerList;
     }
 
     @Override
@@ -41,7 +21,7 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     @Override
     public Customer getById(int id){
-        return customerList.stream().filter(c -> c.getId() == id).limit(1).findFirst().get();
+        return customerList.stream().filter(c -> c.getId() == id).limit(1).findFirst().orElse(null);
     }
 
     @Override

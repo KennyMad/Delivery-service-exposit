@@ -9,6 +9,7 @@ import com.company.ui.menuItem.impl.customerItems.ChangeCustomerItem;
 import com.company.ui.menuItem.impl.customerItems.DeleteCustomerItem;
 import com.company.ui.menuItem.impl.customerItems.DisplayCustomerItem;
 import com.company.ui.menuItem.impl.customerItems.RegisterCustomerItem;
+import com.company.ui.menuItem.impl.filesItem.SaveDataMenuItem;
 import com.company.ui.menuItem.impl.orderItems.CreateOrderItem;
 import com.company.ui.menuItem.impl.orderItems.DisplayOrderItem;
 import com.company.ui.menuItem.impl.storeItems.product.*;
@@ -50,6 +51,8 @@ public class ConsoleMenuBuilder implements MenuBuilder {
         menuItems.add(new DeleteStoreItem(facade));
         menuItems.add(new ChangeStoreItem(facade));
         menuItems.add(new DisplayStoreItem(facade));
+
+        menuItems.add(new SaveDataMenuItem(facade));
 
         return new ConsoleMenu(menuItems);
     }

@@ -1,5 +1,6 @@
 package com.company.facade.impl;
 
+import com.company.constants.Constants;
 import com.company.exception.SaveDataException;
 import com.company.exception.InvalidAttributeException;
 import com.company.exception.WrongIdException;
@@ -9,6 +10,7 @@ import com.company.service.CustomerService;
 import com.company.service.OrderService;
 import com.company.service.ProductService;
 import com.company.service.StoreService;
+import com.company.utils.FileUtil;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,11 +24,15 @@ public class FacadeImpl implements Facade {
     final StoreService storeService;
     final ProductService productService;
 
-    public FacadeImpl(CustomerService customerService, OrderService orderService, StoreService storeService, ProductService productService){
+    final FileUtil fileUtil;
+
+    public FacadeImpl(CustomerService customerService, OrderService orderService, StoreService storeService, ProductService productService, FileUtil fileUtil){
         this.customerService = customerService;
         this.orderService = orderService;
         this.storeService = storeService;
         this.productService = productService;
+
+        this.fileUtil = fileUtil;
     }
 
     @Override
@@ -117,5 +123,12 @@ public class FacadeImpl implements Facade {
     @Override
     public Collection<Order> getOrderList() {
         return orderService.getOrderList();
+    }
+
+    @Override
+    public void saveData() throws SaveDataException {
+        fileUtil.save(customerService.getCustomerList(), Constants.CUSTOMERS_FILE);
+        fileUtil.save(orderService.getOrderList(), Constants.ORDERS_FILE);
+        fileUtil.save(storeService.getStoreList(), Constants.STORE_FILE);
     }
 }

@@ -14,6 +14,8 @@ import com.company.ui.builder.MenuBuilder;
 import com.company.ui.builder.impl.ConsoleMenuBuilder;
 import com.company.ui.controller.MenuController;
 import com.company.ui.controller.impl.MenuControllerImpl;
+import com.company.utils.FileUtil;
+import com.company.utils.impl.FileUtilImpl;
 
 public class Context {
 
@@ -26,29 +28,25 @@ public class Context {
     private StoreService storeService;
     private ProductService productService;
 
-    private FileService fileService;
+    private FileUtil fileUtil;
 
     private MenuController menuController;
 
     private Facade facade;
 
     public void initialize(){
-        fileService = new FileServiceImpl();
+        fileUtil = new FileUtilImpl();
 
-        customerDAO = new CustomerDAOImpl(fileService);
-        orderDAO = new OrderDAOImpl(fileService);
-        storeDAO = new StoreDAOImpl(fileService);
-
-        customerDAO.initialize();
-        orderDAO.initialize();
-        storeDAO.initialize();
+        customerDAO = fileUtil.loadCustomers();
+        orderDAO = fileUtil.loadOrders();
+        storeDAO = fileUtil.loadStores();
 
         customerService = new CustomerServiceImpl(customerDAO);
         orderService = new OrderServiceImpl(customerDAO, orderDAO);
         storeService = new StoreServiceImpl(storeDAO);
         productService = new ProductServiceImpl(storeDAO);
 
-        facade = new FacadeImpl(customerService,orderService, storeService,productService);
+        facade = new FacadeImpl(customerService,orderService, storeService,productService, fileUtil);
 
         MenuBuilder menuBuilder = new ConsoleMenuBuilder(facade);
         menuController = new MenuControllerImpl(menuBuilder.createMenu());

@@ -1,36 +1,17 @@
 package com.company.repository.impl;
 
-import com.company.constants.Constants;
-import com.company.exception.LoadDataException;
-import com.company.exception.SaveDataException;
-import com.company.exception.WrongIdException;
 import com.company.models.Store;
 import com.company.repository.StoreDAO;
-import com.company.service.FileService;
-import com.google.gson.reflect.TypeToken;
 
-import java.io.*;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class StoreDAOImpl implements StoreDAO {
 
     private List<Store> storeList;
 
-    private final FileService fileService;
-
-    public StoreDAOImpl(FileService fileService){
-        this.fileService = fileService;
-    }
-
-    @Override
-    public void initialize(){
-    }
-
-    @Override
-    public void save() throws SaveDataException {
+    public StoreDAOImpl(List<Store> storeList){
+        this.storeList = storeList;
     }
 
     @Override
@@ -40,7 +21,7 @@ public class StoreDAOImpl implements StoreDAO {
 
     @Override
     public Store getById(int id){
-        return storeList.stream().filter(s -> s.getId() == id).limit(1).findFirst().get();
+        return storeList.stream().filter(s -> s.getId() == id).limit(1).findFirst().orElse(null);
     }
 
     @Override

@@ -48,5 +48,6 @@ public interface Facade {
 
     Collection<Order> getOrderList();
 
+    void saveData() throws SaveDataException;
 
 }

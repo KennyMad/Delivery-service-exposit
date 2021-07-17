@@ -23,7 +23,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void add(int storeId, String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException, SaveDataException {
+    public void add(int storeId, String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException{
         Product product = new Product();
         product.setName(name);
         product.setDescription(description);
@@ -36,23 +36,19 @@ public class ProductServiceImpl implements ProductService {
         if (store == null)
             throw new WrongIdException(storeId);
         store.getProductList().put(product.getId(),product);
-
-        storeDao.save();
     }
 
 
     @Override
-    public void delete(int storeId, int productId) throws WrongIdException, SaveDataException {
+    public void delete(int storeId, int productId) throws WrongIdException{
         Store store = storeDao.getById(storeId);
         if (store == null)
             throw new WrongIdException(storeId);
         store.getProductList().remove(productId);
-
-        storeDao.save();
     }
 
     @Override
-    public void update(int storeId, int productId, String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException, SaveDataException {
+    public void update(int storeId, int productId, String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException{
         Store store = storeDao.getById(storeId);
         if (store == null)
             throw new WrongIdException(storeId);
@@ -63,8 +59,6 @@ public class ProductServiceImpl implements ProductService {
         product.setAmount(amount);
         product.setPrice(price);
         product.setCategories(categories);
-
-        storeDao.save();
     }
 
     @Override

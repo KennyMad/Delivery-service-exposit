@@ -17,26 +17,22 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void add(String name, String additionalInformation) throws SaveDataException {
+    public void add(String name, String additionalInformation){
         Customer customer = new Customer();
         customer.setId(customerDao.getFreeId());
         customer.setName(name);
         customer.setAdditionalInformation(additionalInformation);
         customerDao.add(customer);
-
-        customerDao.save();
     }
 
     @Override
-    public void delete(int id) throws WrongIdException, SaveDataException {
+    public void delete(int id) throws WrongIdException{
         if(customerDao.remove(id) == null)
             throw new WrongIdException(id);
-
-        customerDao.save();
     }
 
     @Override
-    public void update(String name, String additionalInformation, int id) throws WrongIdException, SaveDataException {
+    public void update(String name, String additionalInformation, int id) throws WrongIdException{
         Customer customer = customerDao.getById(id);
 
         if (customer == null)
@@ -44,8 +40,6 @@ public class CustomerServiceImpl implements CustomerService {
 
         customer.setName(name);
         customer.setAdditionalInformation(additionalInformation);
-
-        customerDao.save();
     }
 
     @Override

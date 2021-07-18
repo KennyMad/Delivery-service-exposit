@@ -81,13 +81,13 @@ public class FacadeImpl implements Facade {
     }
 
     @Override
-    public void deleteProduct(int storeId, int productId) throws WrongIdException, SaveDataException {
-        productService.delete(storeId, productId);
+    public void deleteProduct(int productId) throws WrongIdException, SaveDataException {
+        productService.delete(productId);
     }
 
     @Override
-    public void updateProduct(int storeId, int productId, String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException, SaveDataException {
-        productService.update(storeId, productId, name, description, amount, price, categories);
+    public void updateProduct(int productId, String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException, SaveDataException {
+        productService.update(productId, name, description, amount, price, categories);
     }
 
     @Override
@@ -130,5 +130,6 @@ public class FacadeImpl implements Facade {
         fileUtil.save(customerService.getCustomerList(), Constants.CUSTOMERS_FILE);
         fileUtil.save(orderService.getOrderList(), Constants.ORDERS_FILE);
         fileUtil.save(storeService.getStoreList(), Constants.STORE_FILE);
+        fileUtil.save(productService.getProductList(), Constants.PRODUCT_FILE);
     }
 }

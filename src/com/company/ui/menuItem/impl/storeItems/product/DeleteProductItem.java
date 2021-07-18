@@ -26,13 +26,10 @@ public class DeleteProductItem implements MenuItem {
         try {
             Scanner scanner = new Scanner(System.in);
 
-            System.out.print("Store id: ");
-            int storeId = scanner.nextInt();
-
             System.out.print("Product id: ");
             int id = scanner.nextInt();
 
-            facade.deleteProduct(storeId,id);
+            facade.deleteProduct(id);
 
             System.out.println("Deleted.");
         }

@@ -14,9 +14,9 @@ public interface ProductService {
 
     void add(int storeId, String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException;
 
-    void delete(int storeId, int productId) throws WrongIdException;
+    void delete(int productId) throws WrongIdException;
 
-    void update(int storeId, int productId , String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException;
+    void update(int productId , String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException;
 
     Collection<Product> getProductList();
 

@@ -4,6 +4,7 @@ import com.company.facade.Facade;
 import com.company.facade.impl.FacadeImpl;
 import com.company.repository.CustomerDAO;
 import com.company.repository.OrderDAO;
+import com.company.repository.ProductDAO;
 import com.company.repository.StoreDAO;
 import com.company.repository.impl.CustomerDAOImpl;
 import com.company.repository.impl.OrderDAOImpl;
@@ -22,6 +23,7 @@ public class Context {
     private CustomerDAO customerDAO;
     private OrderDAO orderDAO;
     private StoreDAO storeDAO;
+    private ProductDAO productDAO;
 
     private CustomerService customerService;
     private OrderService orderService;
@@ -40,11 +42,12 @@ public class Context {
         customerDAO = fileUtil.loadCustomers();
         orderDAO = fileUtil.loadOrders();
         storeDAO = fileUtil.loadStores();
+        productDAO = fileUtil.loadProducts();
 
         customerService = new CustomerServiceImpl(customerDAO);
         orderService = new OrderServiceImpl(customerDAO, orderDAO);
         storeService = new StoreServiceImpl(storeDAO);
-        productService = new ProductServiceImpl(storeDAO);
+        productService = new ProductServiceImpl(productDAO,storeDAO);
 
         facade = new FacadeImpl(customerService,orderService, storeService,productService, fileUtil);
 

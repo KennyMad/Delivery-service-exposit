@@ -1,10 +1,7 @@
 package com.company.utils;
 
 import com.company.exception.SaveDataException;
-import com.company.repository.CustomerDAO;
-import com.company.repository.DAO;
-import com.company.repository.OrderDAO;
-import com.company.repository.StoreDAO;
+import com.company.repository.*;
 
 import java.util.Collection;
 
@@ -18,4 +15,5 @@ public interface FileUtil{
 
     StoreDAO loadStores();
 
+    ProductDAO loadProducts();
 }

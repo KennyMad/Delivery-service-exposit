@@ -6,6 +6,7 @@ import com.company.exception.WrongIdException;
 import com.company.models.Product;
 import com.company.models.ProductCategory;
 import com.company.models.Store;
+import com.company.repository.ProductDAO;
 import com.company.repository.StoreDAO;
 import com.company.service.ProductService;
 import org.apache.commons.beanutils.DynaBean;
@@ -16,10 +17,12 @@ import java.util.stream.Collectors;
 
 public class ProductServiceImpl implements ProductService {
 
-    final private StoreDAO storeDao;
+    final private ProductDAO productDAO;
+    final private StoreDAO storeDAO;
 
-    public ProductServiceImpl (StoreDAO storeDao){
-        this.storeDao = storeDao;
+    public ProductServiceImpl (ProductDAO productDAO, StoreDAO storeDAO){
+        this.productDAO = productDAO;
+        this.storeDAO = storeDAO;
     }
 
     @Override
@@ -30,30 +33,36 @@ public class ProductServiceImpl implements ProductService {
         product.setAmount(amount);
         product.setPrice(price);
         product.setCategories(categories);
-        product.setId(storeDao.getFreeProductId(storeId));
+        product.setId(0);
 
-        Store store = storeDao.getById(storeId);
+        Store store = storeDAO.getById(storeId);
         if (store == null)
             throw new WrongIdException(storeId);
-        store.getProductList().put(product.getId(),product);
+        store.getProductListIds().add(product.getId());
+        product.setStoreId(storeId);
+
+        productDAO.add(product);
     }
 
 
     @Override
-    public void delete(int storeId, int productId) throws WrongIdException{
-        Store store = storeDao.getById(storeId);
+    public void delete(int productId) throws WrongIdException{
+        Product product = productDAO.remove(productId);
+        if (product == null)
+            throw new WrongIdException(productId);
+
+        Store store = storeDAO.getById(product.getStoreId());
         if (store == null)
-            throw new WrongIdException(storeId);
-        store.getProductList().remove(productId);
+            throw new WrongIdException(product.getStoreId());
+        store.getProductListIds().remove(productId);
     }
 
     @Override
-    public void update(int storeId, int productId, String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException{
-        Store store = storeDao.getById(storeId);
-        if (store == null)
-            throw new WrongIdException(storeId);
+    public void update(int productId, String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException{
+        Product product = productDAO.getById(productId);
+        if (product == null)
+            throw new WrongIdException(productId);
 
-        Product product = store.getProductList().get(productId);
         product.setName(name);
         product.setDescription(description);
         product.setAmount(amount);
@@ -63,9 +72,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Collection<Product> getProductList() {
-        Collection<Product> products = new ArrayList<>();
-        storeDao.readAll().forEach(store -> products.addAll(store.getProductList().values()));
-        return products;
+        return productDAO.readAll();
     }
 
     @Override
@@ -100,34 +107,28 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Collection<Product> getProductsByPrice(boolean reversed) {
-        List <Product> productList = new ArrayList<>();
-        storeDao.readAll().forEach(store -> productList.addAll(store.getProductList().values()));
 
         if (reversed)
-            productList.sort(Comparator.comparing(Product::getPrice).reversed());
-        else
-            productList.sort(Comparator.comparing(Product::getPrice));
+            return productDAO.readAll().stream().sorted(Comparator.comparing(Product::getPrice).reversed()).collect(Collectors.toList());
 
-        return productList;
+        return productDAO.readAll().stream().sorted(Comparator.comparing(Product::getPrice)).collect(Collectors.toList());
     }
 
     @Override
     public Collection<Product> getProductsByCategory(ProductCategory category){
-        Collection<Product> products = new ArrayList<>();
-
-        storeDao.readAll().forEach(store -> products.addAll(store.getProductList().values().stream().filter(product ->
-                product.getCategories().contains(category)).collect(Collectors.toList())));
-
-        return products;
+        return getProductList().stream().filter(p -> p.getCategories().contains(category)).collect(Collectors.toList());
     }
 
     @Override
     public Collection<Product> getProductsByStore(int storeId) throws WrongIdException {
-        Store store = storeDao.getById(storeId);
+        Store store = storeDAO.getById(storeId);
         if (store == null)
             throw new WrongIdException(storeId);
 
-        return store.getProductList().values();
+        List<Product> productList = new ArrayList<>();
+        for (int id: store.getProductListIds())
+            productList.add(productDAO.getById(id));
+        return productList;
     }
 
 }

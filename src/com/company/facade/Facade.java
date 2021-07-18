@@ -30,9 +30,9 @@ public interface Facade {
 
     void addProduct(int storeId, String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException, SaveDataException;
 
-    void deleteProduct(int storeId, int productId) throws WrongIdException, SaveDataException;
+    void deleteProduct(int productId) throws WrongIdException, SaveDataException;
 
-    void updateProduct(int storeId, int productId , String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException, SaveDataException;
+    void updateProduct(int productId , String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException, SaveDataException;
 
     Collection<Product> getProductList();
 

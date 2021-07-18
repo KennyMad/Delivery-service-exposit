@@ -1,13 +1,12 @@
 package com.company.models;
 
-import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.List;
 
 public class Store implements Cloneable{
 
     private int id;
 
-    private HashMap<Integer ,Product> productList;
+    private List<Integer> productListIds;
 
     private String name;
 
@@ -17,8 +16,8 @@ public class Store implements Cloneable{
         return id;
     }
 
-    public HashMap<Integer,Product> getProductList() {
-        return productList;
+    public List<Integer> getProductListIds() {
+        return productListIds;
     }
 
     public String getName() {
@@ -33,8 +32,8 @@ public class Store implements Cloneable{
         this.id = id;
     }
 
-    public void setProductList(HashMap<Integer,Product> productList) {
-        this.productList = productList;
+    public void setProductListIds(List<Integer> productListIds) {
+        this.productListIds = productListIds;
     }
 
     public void setName(String name) {
@@ -54,20 +53,14 @@ public class Store implements Cloneable{
     @Override
     public String toString() {
 
-        String productList = "";
+        StringBuilder productList = new StringBuilder();
 
-        if (this.productList.values().size() != 0)
-            productList += "\n";
-
-        for (Product product: this.productList.values()){
-            productList += product.toString();
-            productList += "\n";
-        }
+        this.productListIds.forEach(id -> productList.append(id).append(" "));
 
         return "Store{" +
                 "id=" + id +
                 ", productList=[" + productList +
-                "],\n name='" + name + '\'' +
+                "], name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 '}';
     }

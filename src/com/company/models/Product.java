@@ -6,6 +6,8 @@ public class Product implements Cloneable{
 
     private int id;
 
+    private int storeId;
+
     private String name;
 
     private String description;
@@ -18,6 +20,10 @@ public class Product implements Cloneable{
 
     public int getId() {
         return id;
+    }
+
+    public int getStoreId() {
+        return storeId;
     }
 
     public int getAmount() {
@@ -42,6 +48,10 @@ public class Product implements Cloneable{
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setStoreId(int storeId) {
+        this.storeId = storeId;
     }
 
     public void setAmount(int amount) {

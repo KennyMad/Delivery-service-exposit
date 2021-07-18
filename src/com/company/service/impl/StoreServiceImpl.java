@@ -21,7 +21,7 @@ public class StoreServiceImpl implements StoreService {
     public void add(String name, String description){
         Store store = new Store();
         store.setId(storeDao.getFreeStoreId());
-        store.setProductList(new HashMap<>());
+        store.setProductListIds(new ArrayList<>());
         store.setName(name);
         store.setDescription(description);
         storeDao.add(store);

@@ -5,13 +5,12 @@ import com.company.exception.LoadDataException;
 import com.company.exception.SaveDataException;
 import com.company.models.Customer;
 import com.company.models.Order;
+import com.company.models.Product;
 import com.company.models.Store;
-import com.company.repository.CustomerDAO;
-import com.company.repository.DAO;
-import com.company.repository.OrderDAO;
-import com.company.repository.StoreDAO;
+import com.company.repository.*;
 import com.company.repository.impl.CustomerDAOImpl;
 import com.company.repository.impl.OrderDAOImpl;
+import com.company.repository.impl.ProductDAOImpl;
 import com.company.repository.impl.StoreDAOImpl;
 import com.company.utils.FileUtil;
 import com.google.gson.Gson;
@@ -70,6 +69,17 @@ public class FileUtilImpl implements FileUtil {
             storeList = new ArrayList<>();
         }
         return new StoreDAOImpl(storeList);
+    }
+
+    @Override
+    public ProductDAO loadProducts() {
+        List<Product> productList;
+        try {
+            productList = load(Constants.PRODUCT_FILE, new TypeToken<ArrayList<Product>>() {}.getType());
+        } catch (FileNotFoundException | LoadDataException exception) {
+            productList = new ArrayList<>();
+        }
+        return new ProductDAOImpl(productList);
     }
 
     private List load (String fileName, Type type) throws FileNotFoundException, LoadDataException{

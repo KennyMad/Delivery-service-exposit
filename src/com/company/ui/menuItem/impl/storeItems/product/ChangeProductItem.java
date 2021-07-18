@@ -26,9 +26,6 @@ public class ChangeProductItem implements MenuItem {
         Scanner scanner = new Scanner(System.in);
 
         try {
-            System.out.print("Store id: ");
-            int id = scanner.nextInt();
-
             System.out.print("Product id: ");
             int productId = scanner.nextInt();
             scanner.skip("\\R");
@@ -46,7 +43,7 @@ public class ChangeProductItem implements MenuItem {
             double price = scanner.nextDouble();
             scanner.skip("\\R");
 
-            facade.updateProduct(id,productId,name,description,amount,price,getCategories(scanner));
+            facade.updateProduct(productId,name,description,amount,price,getCategories(scanner));
 
             System.out.println("Changed.");
         }

@@ -1,10 +1,10 @@
 package com.company.service.impl;
 
-import com.company.exception.SaveDataException;
 import com.company.exception.WrongIdException;
 import com.company.models.Customer;
 import com.company.repository.CustomerDAO;
 import com.company.service.CustomerService;
+import com.company.utils.impl.SequenceGenerator;
 
 import java.util.Collection;
 
@@ -19,7 +19,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void add(String name, String additionalInformation){
         Customer customer = new Customer();
-        customer.setId(customerDao.getFreeId());
+        customer.setId(SequenceGenerator.getFreeCustomerId(customerDao.readAll()));
         customer.setName(name);
         customer.setAdditionalInformation(additionalInformation);
         customerDao.add(customer);

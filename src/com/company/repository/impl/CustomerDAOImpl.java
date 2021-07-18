@@ -36,9 +36,4 @@ public class CustomerDAOImpl implements CustomerDAO {
     public void add(Customer customer) {
         customerList.add(customer);
     }
-
-    @Override
-    public int getFreeId(){
-        return 0;
-    }
 }

@@ -9,6 +9,7 @@ import com.company.models.Store;
 import com.company.repository.ProductDAO;
 import com.company.repository.StoreDAO;
 import com.company.service.ProductService;
+import com.company.utils.impl.SequenceGenerator;
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.WrapDynaBean;
 
@@ -33,7 +34,7 @@ public class ProductServiceImpl implements ProductService {
         product.setAmount(amount);
         product.setPrice(price);
         product.setCategories(categories);
-        product.setId(0);
+        product.setId(SequenceGenerator.getFreeProductId(productDAO.readAll()));
 
         Store store = storeDAO.getById(storeId);
         if (store == null)

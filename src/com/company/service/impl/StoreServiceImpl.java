@@ -5,6 +5,7 @@ import com.company.exception.WrongIdException;
 import com.company.models.Store;
 import com.company.repository.StoreDAO;
 import com.company.service.StoreService;
+import com.company.utils.impl.SequenceGenerator;
 
 import java.util.*;
 
@@ -20,7 +21,7 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public void add(String name, String description){
         Store store = new Store();
-        store.setId(storeDao.getFreeStoreId());
+        store.setId(SequenceGenerator.getFreeStoreId(storeDao.readAll()));
         store.setProductListIds(new ArrayList<>());
         store.setName(name);
         store.setDescription(description);

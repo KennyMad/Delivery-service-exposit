@@ -9,6 +9,7 @@ import com.company.models.Product;
 import com.company.repository.CustomerDAO;
 import com.company.repository.OrderDAO;
 import com.company.service.OrderService;
+import com.company.utils.impl.SequenceGenerator;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,7 +28,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void add(int customerId, HashMap<Integer, List<Product>> productsByStoreId, OrderAddress orderAddress) throws WrongIdException{
         Order order = new Order();
-        order.setId(orderDAO.getFreeId());
+        order.setId(SequenceGenerator.getFreeOrderId(orderDAO.readAll()));
 
         Customer customer = customerDAO.getById(customerId);
 

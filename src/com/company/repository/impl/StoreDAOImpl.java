@@ -36,14 +36,4 @@ public class StoreDAOImpl implements StoreDAO {
     public void add(Store store) {
         storeList.add(store);
     }
-
-    @Override
-    public int getFreeStoreId() {
-        return 0;
-    }
-
-    @Override
-    public int getFreeProductId(int storeId) {
-        return 0;
-    }
 }

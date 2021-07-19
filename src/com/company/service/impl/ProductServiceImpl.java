@@ -1,17 +1,15 @@
 package com.company.service.impl;
 
-import com.company.exception.SaveDataException;
 import com.company.exception.InvalidAttributeException;
 import com.company.exception.WrongIdException;
 import com.company.models.Product;
+import com.company.models.ProductAttribute;
 import com.company.models.ProductCategory;
 import com.company.models.Store;
 import com.company.repository.ProductDAO;
 import com.company.repository.StoreDAO;
 import com.company.service.ProductService;
 import com.company.utils.impl.SequenceGenerator;
-import org.apache.commons.beanutils.DynaBean;
-import org.apache.commons.beanutils.WrapDynaBean;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -78,32 +76,79 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Collection<Product> getProductsByAttributes(Map<String,String> nameValueMap) throws InvalidAttributeException {
-        List<Product> productList = new ArrayList<>();
-
-        for (Product product: getProductList()) {
-            DynaBean wrapper = new WrapDynaBean(product);
-            boolean isFound = false;
-            for (Map.Entry<String, String> entry: nameValueMap.entrySet()){
-                try {
-                    Object attribute = wrapper.get(entry.getKey().toLowerCase());
-
-                    if (attribute.toString().toLowerCase().contains(entry.getValue().toLowerCase())) {
-                        isFound = true;
-                    } else {
-                        isFound = false;
-                        break;
-                    }
-                }
-                catch (IllegalArgumentException exception){
-                    throw new InvalidAttributeException(entry.getKey());
-                }
+        Map<ProductAttribute, String> attributeValueMap = new HashMap<>();
+        for (Map.Entry<String, String> entry : nameValueMap.entrySet()) {
+            try {
+                attributeValueMap.put(ProductAttribute.valueOf(entry.getKey().toUpperCase()), entry.getValue());
             }
-            if (isFound){
-                productList.add(product);
+            catch (IllegalArgumentException e){
+                throw new InvalidAttributeException(entry.getValue());
             }
         }
 
+        List<Product> productList = getProductList().stream()
+                .filter(product -> isProductHasAttribute(product,attributeValueMap))
+                .collect(Collectors.toList());
+
         return productList;
+    }
+
+    private boolean isProductHasAttribute(Product product, Map<ProductAttribute, String> attributeValueMap){
+        for (Map.Entry<ProductAttribute, String> entry: attributeValueMap.entrySet()){
+            switch (entry.getKey()){
+                case PRICE:
+                    if(!product.getPrice().toString().contains(entry.getValue().replace(",",".")))
+                        return false;
+                    break;
+                case ID:
+                    try {
+                        if (product.getId() != Integer.parseInt(entry.getValue()))
+                            return false;
+                    }
+                    catch (NumberFormatException exception){
+                        return false;
+                    }
+                    break;
+                case NAME:
+                    if (!product.getName().toLowerCase().contains(entry.getValue().toLowerCase()))
+                        return false;
+                    break;
+                case AMOUNT:
+                    try {
+                        if (product.getAmount() != Integer.parseInt(entry.getValue()))
+                            return false;
+                    }
+                    catch (NumberFormatException exception){
+                        return false;
+                    }
+                    break;
+                case DESCRIPTION:
+                    if (!product.getDescription().toLowerCase().contains(entry.getValue().toLowerCase()))
+                        return false;
+                    break;
+                case STORE_ID:
+                    try {
+                        if (product.getStoreId() != Integer.parseInt(entry.getValue()))
+                            return false;
+                    }
+                    catch (NumberFormatException exception){
+                        return false;
+                    }
+                    break;
+                case CATEGORY:
+                    try {
+                        if (!product.getCategories().contains(ProductCategory.valueOf(entry.getValue().toUpperCase())))
+                            return false;
+                    }
+                    catch (IllegalArgumentException exception){
+                        return false;
+                    }
+                    break;
+                default:
+                    return false;
+            }
+        }
+        return true;
     }
 
     @Override

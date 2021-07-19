@@ -3,6 +3,9 @@ package com.company.ui.menuItem.impl.orderItems;
 import com.company.exception.SaveDataException;
 import com.company.exception.WrongIdException;
 import com.company.facade.Facade;
+import com.company.models.DTO.OrderAddressDTO;
+import com.company.models.DTO.OrderDTO;
+import com.company.models.DTO.ProductDTO;
 import com.company.models.OrderAddress;
 import com.company.models.Product;
 import com.company.ui.menuItem.MenuItem;
@@ -34,20 +37,18 @@ public class CreateOrderItem implements MenuItem {
             customerId = scanner.nextInt();
             scanner.skip("\\R");
 
-            HashMap<Integer, List<Product>> productsByStoreId = getProducts(scanner);
-
-            OrderAddress orderAddress = new OrderAddress();
+            HashMap<Integer, Integer> products = getProducts(scanner);
 
             System.out.print("House: ");
-            orderAddress.setHouse(scanner.nextLine());
+            String house = scanner.nextLine();
 
             System.out.print("Street: ");
-            orderAddress.setStreet(scanner.nextLine());
+            String street = scanner.nextLine();
 
             System.out.print("City: ");
-            orderAddress.setCity(scanner.nextLine());
+            String city = scanner.nextLine();
 
-            facade.createOrder(customerId,productsByStoreId, orderAddress);
+            facade.createOrder(new OrderDTO(customerId,new OrderAddressDTO(house,street,city),products));
 
             System.out.println("Created.");
         }
@@ -59,10 +60,10 @@ public class CreateOrderItem implements MenuItem {
         }
     }
 
-    private HashMap<Integer,List<Product>> getProducts(Scanner scanner) throws WrongIdException, InputMismatchException, IndexOutOfBoundsException, NumberFormatException{
+    private HashMap<Integer,Integer> getProducts(Scanner scanner) throws WrongIdException, InputMismatchException, IndexOutOfBoundsException, NumberFormatException{
         int storeId;
 
-        HashMap<Integer, List<Product>> productsByStoreId = new HashMap();
+        HashMap<Integer, Integer> productIdsAndCountMap = new HashMap();
 
         System.out.print("Enter store id (- if none): ");
         String input = scanner.nextLine();
@@ -72,18 +73,17 @@ public class CreateOrderItem implements MenuItem {
             System.out.println("Products: ");
             facade.getProductsByStore(storeId).forEach(System.out::println);
 
-            productsByStoreId.put(storeId,getProducts(scanner,storeId));
+            productIdsAndCountMap.putAll(getProductIdsAndCount(scanner,storeId));
 
             System.out.print("Enter store id (- if none): ");
             input = scanner.nextLine();
         }
 
-
-        return productsByStoreId;
+        return productIdsAndCountMap;
     }
 
-    private List<Product> getProducts(Scanner scanner, int storeId) throws WrongIdException{
-        List<Product> productList = new ArrayList<>();
+    private HashMap<Integer,Integer> getProductIdsAndCount(Scanner scanner, int storeId) throws WrongIdException{
+        HashMap<Integer,Integer> productList = new HashMap<>();
         boolean added;
         int id;
         String input;
@@ -96,16 +96,10 @@ public class CreateOrderItem implements MenuItem {
 
             added = false;
 
-            for (Product product: facade.getProductsByStore(storeId)){
+            for (ProductDTO product: facade.getProductsByStore(storeId)){
                 if (product.getId() == id){
                     System.out.print("Amount: ");
-                    try {
-                        Product productToAdd = product.clone();
-                        productToAdd.setAmount(Integer.parseInt(scanner.nextLine()));
-                        productList.add(productToAdd);
-                    }
-                    catch (CloneNotSupportedException ignored){}
-
+                    productList.put(id,Integer.parseInt(scanner.nextLine()));
                     added = true;
                     break;
                 }

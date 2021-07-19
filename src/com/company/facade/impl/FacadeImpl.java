@@ -6,6 +6,11 @@ import com.company.exception.InvalidAttributeException;
 import com.company.exception.WrongIdException;
 import com.company.facade.Facade;
 import com.company.models.*;
+import com.company.models.DTO.*;
+import com.company.models.DTO.mapper.CustomerMapper;
+import com.company.models.DTO.mapper.OrderMapper;
+import com.company.models.DTO.mapper.ProductMapper;
+import com.company.models.DTO.mapper.StoreMapper;
 import com.company.service.CustomerService;
 import com.company.service.OrderService;
 import com.company.service.ProductService;
@@ -13,9 +18,8 @@ import com.company.service.StoreService;
 import com.company.utils.FileUtil;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class FacadeImpl implements Facade {
 
@@ -36,8 +40,8 @@ public class FacadeImpl implements Facade {
     }
 
     @Override
-    public void registerCustomer(String name, String additionalInformation) throws SaveDataException {
-        customerService.add(name, additionalInformation);
+    public void registerCustomer(CustomerDTO customerDTO) throws SaveDataException {
+        customerService.add(customerDTO);
     }
 
     @Override
@@ -46,18 +50,18 @@ public class FacadeImpl implements Facade {
     }
 
     @Override
-    public void updateCustomer(String name, String additionalInformation, int id) throws WrongIdException, SaveDataException {
-        customerService.update(name, additionalInformation, id);
+    public void updateCustomer(CustomerDTO customerDTO) throws WrongIdException, SaveDataException {
+        customerService.update(customerDTO);
     }
 
     @Override
-    public Collection<Customer> getCustomerList() {
+    public Collection<CustomerDTO> getCustomerList() {
         return customerService.getCustomerList();
     }
 
     @Override
-    public void registerStore(String name, String description) throws SaveDataException {
-        storeService.add(name, description);
+    public void registerStore(StoreDTO storeDTO) throws SaveDataException {
+        storeService.add(storeDTO);
     }
 
     @Override
@@ -66,18 +70,18 @@ public class FacadeImpl implements Facade {
     }
 
     @Override
-    public void updateStore(String name, String description, int id) throws WrongIdException, SaveDataException {
-        storeService.update(name, description, id);
+    public void updateStore(StoreDTO storeDTO) throws WrongIdException, SaveDataException {
+        storeService.update(storeDTO);
     }
 
     @Override
-    public Collection<Store> getStoreList() {
+    public Collection<StoreDTO> getStoreList() {
         return storeService.getStoreList();
     }
 
     @Override
-    public void addProduct(int storeId, String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException, SaveDataException {
-        productService.add(storeId, name, description, amount, price, categories);
+    public void addProduct(ProductDTO productDTO) throws WrongIdException, SaveDataException {
+        productService.add(productDTO);
     }
 
     @Override
@@ -86,50 +90,61 @@ public class FacadeImpl implements Facade {
     }
 
     @Override
-    public void updateProduct(int productId, String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException, SaveDataException {
-        productService.update(productId, name, description, amount, price, categories);
+    public void updateProduct(ProductDTO productDTO) throws WrongIdException, SaveDataException {
+        productService.update(productDTO);
     }
 
     @Override
-    public Collection<Product> getProductList() {
+    public Collection<ProductDTO> getProductList() {
         return productService.getProductList();
     }
 
     @Override
-    public Collection<Product> getProductsByAttributes(Map<String, String> nameValueMap) throws InvalidAttributeException {
+    public Collection<ProductDTO> getProductsByAttributes(Map<String, String> nameValueMap) throws InvalidAttributeException {
         return productService.getProductsByAttributes(nameValueMap);
     }
 
     @Override
-    public Collection<Product> getProductsByPrice(boolean reversed) {
+    public Collection<ProductDTO> getProductsByPrice(boolean reversed) {
         return productService.getProductsByPrice(reversed);
     }
 
     @Override
-    public Collection<Product> getProductsByCategory(ProductCategory category) {
+    public Collection<ProductDTO> getProductsByCategory(ProductCategory category) {
         return productService.getProductsByCategory(category);
     }
 
     @Override
-    public Collection<Product> getProductsByStore(int storeId) throws WrongIdException {
+    public Collection<ProductDTO> getProductsByStore(int storeId) throws WrongIdException {
         return productService.getProductsByStore(storeId);
     }
 
     @Override
-    public void createOrder(int customerId, HashMap<Integer, List<Product>> productsByStoreId, OrderAddress orderAddress) throws WrongIdException, SaveDataException {
-        orderService.add(customerId, productsByStoreId, orderAddress);
+    public void createOrder(OrderDTO orderDTO) throws WrongIdException, SaveDataException {
+        orderService.add(orderDTO);
     }
 
     @Override
-    public Collection<Order> getOrderList() {
+    public Collection<OrderDTO> getOrderList() {
         return orderService.getOrderList();
     }
 
     @Override
     public void saveData() throws SaveDataException {
-        fileUtil.save(customerService.getCustomerList(), Constants.CUSTOMERS_FILE);
-        fileUtil.save(orderService.getOrderList(), Constants.ORDERS_FILE);
-        fileUtil.save(storeService.getStoreList(), Constants.STORE_FILE);
-        fileUtil.save(productService.getProductList(), Constants.PRODUCT_FILE);
+        fileUtil.save(customerService.getCustomerList().stream()
+                .map(CustomerMapper.CUSTOMER_MAPPER::customerDTOtoCustomer)
+                .collect(Collectors.toList()), Constants.CUSTOMERS_FILE);
+
+        fileUtil.save(orderService.getOrderList().stream()
+                .map(OrderMapper.ORDER_MAPPER::orderDTOtoOrder)
+                .collect(Collectors.toList()), Constants.ORDERS_FILE);
+
+        fileUtil.save(storeService.getStoreList().stream()
+                .map(StoreMapper.STORE_MAPPER::storeDTOtoStore)
+                .collect(Collectors.toList()), Constants.STORE_FILE);
+
+        fileUtil.save(productService.getProductList().stream()
+                .map(ProductMapper.PRODUCT_MAPPER::productDTOtoProduct)
+                .collect(Collectors.toList()), Constants.PRODUCT_FILE);
     }
 }

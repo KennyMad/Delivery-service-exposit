@@ -4,49 +4,51 @@ import com.company.exception.SaveDataException;
 import com.company.exception.InvalidAttributeException;
 import com.company.exception.WrongIdException;
 import com.company.models.*;
+import com.company.models.DTO.CustomerDTO;
+import com.company.models.DTO.OrderDTO;
+import com.company.models.DTO.ProductDTO;
+import com.company.models.DTO.StoreDTO;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public interface Facade {
 
-    void registerCustomer(String name, String additionalInformation) throws SaveDataException;
+    void registerCustomer(CustomerDTO customerDTO) throws SaveDataException;
 
     void deleteCustomer(int id) throws WrongIdException, SaveDataException;
 
-    void updateCustomer(String name, String additionalInformation, int id) throws WrongIdException, SaveDataException;
+    void updateCustomer(CustomerDTO customerDTO) throws WrongIdException, SaveDataException;
 
-    Collection<Customer> getCustomerList();
+    Collection<CustomerDTO> getCustomerList();
 
-    void registerStore(String name, String description) throws SaveDataException;
+    void registerStore(StoreDTO storeDTO) throws SaveDataException;
 
     void deleteStore(int id) throws WrongIdException, SaveDataException;
 
-    void updateStore(String name, String description, int id) throws WrongIdException, SaveDataException;
+    void updateStore(StoreDTO storeDTO) throws WrongIdException, SaveDataException;
 
-    Collection<Store> getStoreList();
+    Collection<StoreDTO> getStoreList();
 
-    void addProduct(int storeId, String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException, SaveDataException;
+    void addProduct(ProductDTO productDTO) throws WrongIdException, SaveDataException;
 
     void deleteProduct(int productId) throws WrongIdException, SaveDataException;
 
-    void updateProduct(int productId , String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException, SaveDataException;
+    void updateProduct(ProductDTO productDTO) throws WrongIdException, SaveDataException;
 
-    Collection<Product> getProductList();
+    Collection<ProductDTO> getProductList();
 
-    Collection<Product> getProductsByAttributes(Map<String, String> nameValueMap) throws InvalidAttributeException;
+    Collection<ProductDTO> getProductsByAttributes(Map<String, String> nameValueMap) throws InvalidAttributeException;
 
-    Collection<Product> getProductsByPrice(boolean reversed);
+    Collection<ProductDTO> getProductsByPrice(boolean reversed);
 
-    Collection<Product> getProductsByCategory(ProductCategory category);
+    Collection<ProductDTO> getProductsByCategory(ProductCategory category);
 
-    Collection<Product> getProductsByStore(int storeId) throws WrongIdException;
+    Collection<ProductDTO> getProductsByStore(int storeId) throws WrongIdException;
 
-    void createOrder(int customerId, HashMap<Integer, List<Product>> productsByStoreId, OrderAddress orderAddress) throws WrongIdException, SaveDataException;
+    void createOrder(OrderDTO orderDTO) throws WrongIdException, SaveDataException;
 
-    Collection<Order> getOrderList();
+    Collection<OrderDTO> getOrderList();
 
     void saveData() throws SaveDataException;
 

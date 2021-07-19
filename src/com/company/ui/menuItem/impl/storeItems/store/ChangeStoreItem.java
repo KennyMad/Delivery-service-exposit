@@ -3,6 +3,7 @@ package com.company.ui.menuItem.impl.storeItems.store;
 import com.company.exception.SaveDataException;
 import com.company.exception.WrongIdException;
 import com.company.facade.Facade;
+import com.company.models.DTO.StoreDTO;
 import com.company.ui.menuItem.MenuItem;
 
 import java.util.InputMismatchException;
@@ -36,7 +37,7 @@ public class ChangeStoreItem implements MenuItem {
             System.out.println("Description: ");
             String description = scanner.nextLine();
 
-            facade.updateStore(name,description,id);
+            facade.updateStore(new StoreDTO(id,name,description));
 
             System.out.println("Changed.");
         }

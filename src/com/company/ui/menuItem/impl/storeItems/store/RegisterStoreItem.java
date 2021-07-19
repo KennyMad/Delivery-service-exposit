@@ -2,6 +2,7 @@ package com.company.ui.menuItem.impl.storeItems.store;
 
 import com.company.exception.SaveDataException;
 import com.company.facade.Facade;
+import com.company.models.DTO.StoreDTO;
 import com.company.ui.menuItem.MenuItem;
 
 import java.util.Scanner;
@@ -30,7 +31,7 @@ public class RegisterStoreItem implements MenuItem {
         String description = scanner.nextLine();
 
         try {
-            facade.registerStore(name, description);
+            facade.registerStore(new StoreDTO(name, description));
         }
         catch (SaveDataException exception){
             System.out.println(exception.getMessage());

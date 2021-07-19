@@ -1,5 +1,6 @@
 package com.company.models;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -7,51 +8,51 @@ public class Order {
 
     private int id;
 
-    private Customer customer;
+    private int customerId;
 
     private OrderAddress orderAddress;
 
-    private HashMap<Integer, List<Product>> productsByStoreId;
+    private HashMap<Integer, Integer> productIdCountMap;
 
     public void setId(int id) {
         this.id = id;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
     }
 
     public void setOrderAddress(OrderAddress orderAddress) {
         this.orderAddress = orderAddress;
     }
 
-    public void setProductsByStoreId(HashMap<Integer, List<Product>> productsByStoreId) {
-        this.productsByStoreId = productsByStoreId;
-    }
-
     public int getId() {
         return id;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public int getCustomerId() {
+        return customerId;
     }
 
     public OrderAddress getOrderAddress() {
         return orderAddress;
     }
 
-    public HashMap<Integer, List<Product>> getProductsByStoreId() {
-        return productsByStoreId;
+    public HashMap<Integer, Integer> getProductIdCountMap() {
+        return productIdCountMap;
+    }
+
+    public void setProductIdCountMap(HashMap<Integer, Integer> productIdCountMap) {
+        this.productIdCountMap = productIdCountMap;
     }
 
     @Override
     public String toString() {
         return "Order{" +
                 "id=" + id +
-                ", customer=" + customer +
+                ", customerId=" + customerId +
                 ", orderAddress=" + orderAddress +
-                ", productsByStoreId=" + productsByStoreId +
+                ", productIdCountMap=" + productIdCountMap +
                 '}';
     }
 }

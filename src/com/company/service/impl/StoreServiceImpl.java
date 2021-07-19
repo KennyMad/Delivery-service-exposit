@@ -1,13 +1,15 @@
 package com.company.service.impl;
 
-import com.company.exception.SaveDataException;
 import com.company.exception.WrongIdException;
+import com.company.models.DTO.StoreDTO;
+import com.company.models.DTO.mapper.StoreMapper;
 import com.company.models.Store;
 import com.company.repository.StoreDAO;
 import com.company.service.StoreService;
 import com.company.utils.impl.SequenceGenerator;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class StoreServiceImpl implements StoreService {
 
@@ -19,12 +21,9 @@ public class StoreServiceImpl implements StoreService {
 
 
     @Override
-    public void add(String name, String description){
-        Store store = new Store();
+    public void add(StoreDTO storeDTO){
+        Store store = StoreMapper.STORE_MAPPER.storeDTOtoStore(storeDTO);
         store.setId(SequenceGenerator.getFreeStoreId(storeDao.readAll()));
-        store.setProductListIds(new ArrayList<>());
-        store.setName(name);
-        store.setDescription(description);
         storeDao.add(store);
     }
 
@@ -35,17 +34,20 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public void update(String name, String description, int id) throws WrongIdException{
-        Store store = storeDao.getById(id);
+    public void update(StoreDTO storeDTO) throws WrongIdException{
+        Store updatedStore = StoreMapper.STORE_MAPPER.storeDTOtoStore(storeDTO);
+        Store store = storeDao.getById(updatedStore.getId());
         if (store == null)
-            throw new WrongIdException(id);
-        store.setName(name);
-        store.setDescription(description);
+            throw new WrongIdException(updatedStore.getId());
+        store.setName(updatedStore.getName());
+        store.setDescription(updatedStore.getDescription());
     }
 
     @Override
-    public Collection<Store> getStoreList() {
-        return storeDao.readAll();
+    public Collection<StoreDTO> getStoreList() {
+        return storeDao.readAll().stream()
+                .map(StoreMapper.STORE_MAPPER::storeToStoreDTO)
+                .collect(Collectors.toList());
     }
 
 

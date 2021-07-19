@@ -2,6 +2,8 @@ package com.company.service.impl;
 
 import com.company.exception.InvalidAttributeException;
 import com.company.exception.WrongIdException;
+import com.company.models.DTO.ProductDTO;
+import com.company.models.DTO.mapper.ProductMapper;
 import com.company.models.Product;
 import com.company.models.ProductAttribute;
 import com.company.models.ProductCategory;
@@ -25,20 +27,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void add(int storeId, String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException{
-        Product product = new Product();
-        product.setName(name);
-        product.setDescription(description);
-        product.setAmount(amount);
-        product.setPrice(price);
-        product.setCategories(categories);
+    public void add(ProductDTO productDTO) throws WrongIdException{
+        Product product = ProductMapper.PRODUCT_MAPPER.productDTOtoProduct(productDTO);
         product.setId(SequenceGenerator.getFreeProductId(productDAO.readAll()));
 
-        Store store = storeDAO.getById(storeId);
+        Store store = storeDAO.getById(product.getStoreId());
         if (store == null)
-            throw new WrongIdException(storeId);
+            throw new WrongIdException(product.getStoreId());
         store.getProductListIds().add(product.getId());
-        product.setStoreId(storeId);
 
         productDAO.add(product);
     }
@@ -57,25 +53,28 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void update(int productId, String name, String description, int amount, double price, List<ProductCategory> categories) throws WrongIdException{
-        Product product = productDAO.getById(productId);
+    public void update(ProductDTO productDTO) throws WrongIdException{
+        Product updatedProduct = ProductMapper.PRODUCT_MAPPER.productDTOtoProduct(productDTO);
+        Product product = productDAO.getById(updatedProduct.getId());
         if (product == null)
-            throw new WrongIdException(productId);
+            throw new WrongIdException(updatedProduct.getId());
 
-        product.setName(name);
-        product.setDescription(description);
-        product.setAmount(amount);
-        product.setPrice(price);
-        product.setCategories(categories);
+        product.setName(updatedProduct.getName());
+        product.setDescription(updatedProduct.getDescription());
+        product.setAmount(updatedProduct.getAmount());
+        product.setPrice(updatedProduct.getPrice());
+        product.setCategories(updatedProduct.getCategories());
     }
 
     @Override
-    public Collection<Product> getProductList() {
-        return productDAO.readAll();
+    public Collection<ProductDTO> getProductList() {
+        return productDAO.readAll().stream()
+                .map(ProductMapper.PRODUCT_MAPPER::productToProductDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Collection<Product> getProductsByAttributes(Map<String,String> nameValueMap) throws InvalidAttributeException {
+    public Collection<ProductDTO> getProductsByAttributes(Map<String,String> nameValueMap) throws InvalidAttributeException {
         Map<ProductAttribute, String> attributeValueMap = new HashMap<>();
         for (Map.Entry<String, String> entry : nameValueMap.entrySet()) {
             try {
@@ -86,11 +85,13 @@ public class ProductServiceImpl implements ProductService {
             }
         }
 
-        List<Product> productList = getProductList().stream()
+        List<Product> productList = productDAO.readAll().stream()
                 .filter(product -> isProductHasAttribute(product,attributeValueMap))
                 .collect(Collectors.toList());
 
-        return productList;
+        return productList.stream()
+                .map(ProductMapper.PRODUCT_MAPPER::productToProductDTO)
+                .collect(Collectors.toList());
     }
 
     private boolean isProductHasAttribute(Product product, Map<ProductAttribute, String> attributeValueMap){
@@ -152,21 +153,24 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Collection<Product> getProductsByPrice(boolean reversed) {
+    public Collection<ProductDTO> getProductsByPrice(boolean reversed) {
 
         if (reversed)
-            return productDAO.readAll().stream().sorted(Comparator.comparing(Product::getPrice).reversed()).collect(Collectors.toList());
+            return getProductList().stream().sorted(Comparator.comparing(ProductDTO::getPrice).reversed()).collect(Collectors.toList());
 
-        return productDAO.readAll().stream().sorted(Comparator.comparing(Product::getPrice)).collect(Collectors.toList());
+        return getProductList().stream().sorted(Comparator.comparing(ProductDTO::getPrice)).collect(Collectors.toList());
     }
 
     @Override
-    public Collection<Product> getProductsByCategory(ProductCategory category){
-        return getProductList().stream().filter(p -> p.getCategories().contains(category)).collect(Collectors.toList());
+    public Collection<ProductDTO> getProductsByCategory(ProductCategory category){
+        return productDAO.readAll().stream()
+                .filter(p -> p.getCategories().contains(category))
+                .map(ProductMapper.PRODUCT_MAPPER::productToProductDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Collection<Product> getProductsByStore(int storeId) throws WrongIdException {
+    public Collection<ProductDTO> getProductsByStore(int storeId) throws WrongIdException {
         Store store = storeDAO.getById(storeId);
         if (store == null)
             throw new WrongIdException(storeId);
@@ -174,7 +178,9 @@ public class ProductServiceImpl implements ProductService {
         List<Product> productList = new ArrayList<>();
         for (int id: store.getProductListIds())
             productList.add(productDAO.getById(id));
-        return productList;
+        return productList.stream()
+                .map(ProductMapper.PRODUCT_MAPPER::productToProductDTO)
+                .collect(Collectors.toList());
     }
 
 }

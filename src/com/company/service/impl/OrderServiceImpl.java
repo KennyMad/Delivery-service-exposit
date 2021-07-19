@@ -1,19 +1,17 @@
 package com.company.service.impl;
 
-import com.company.exception.SaveDataException;
 import com.company.exception.WrongIdException;
 import com.company.models.Customer;
+import com.company.models.DTO.OrderDTO;
+import com.company.models.DTO.mapper.OrderMapper;
 import com.company.models.Order;
-import com.company.models.OrderAddress;
-import com.company.models.Product;
 import com.company.repository.CustomerDAO;
 import com.company.repository.OrderDAO;
 import com.company.service.OrderService;
 import com.company.utils.impl.SequenceGenerator;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.stream.Collectors;
 
 public class OrderServiceImpl implements OrderService {
 
@@ -26,23 +24,21 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void add(int customerId, HashMap<Integer, List<Product>> productsByStoreId, OrderAddress orderAddress) throws WrongIdException{
-        Order order = new Order();
+    public void add(OrderDTO orderDTO) throws WrongIdException{
+        Order order = OrderMapper.ORDER_MAPPER.orderDTOtoOrder(orderDTO);
         order.setId(SequenceGenerator.getFreeOrderId(orderDAO.readAll()));
 
-        Customer customer = customerDAO.getById(customerId);
+        Customer customer = customerDAO.getById(order.getCustomerId());
 
         if (customer == null)
-            throw new WrongIdException(customerId);
-
-        order.setCustomer(customer);
-        order.setProductsByStoreId(productsByStoreId);
-        order.setOrderAddress(orderAddress);
+            throw new WrongIdException(order.getCustomerId());
         orderDAO.add(order);
     }
 
     @Override
-    public Collection<Order> getOrderList() {
-        return orderDAO.readAll();
+    public Collection<OrderDTO> getOrderList() {
+        return orderDAO.readAll().stream()
+                .map(OrderMapper.ORDER_MAPPER::orderToOrderDTO)
+                .collect(Collectors.toList());
     }
 }

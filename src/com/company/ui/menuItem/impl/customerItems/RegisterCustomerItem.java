@@ -2,6 +2,7 @@ package com.company.ui.menuItem.impl.customerItems;
 
 import com.company.exception.SaveDataException;
 import com.company.facade.Facade;
+import com.company.models.DTO.CustomerDTO;
 import com.company.ui.menuItem.MenuItem;
 
 import java.util.InputMismatchException;
@@ -33,7 +34,7 @@ public class RegisterCustomerItem implements MenuItem {
             System.out.print("Additional information: ");
             additionalInformation = scanner.nextLine();
 
-            facade.registerCustomer(name,additionalInformation);
+            facade.registerCustomer(new CustomerDTO(name,additionalInformation));
 
             System.out.println("Registered.");
         }

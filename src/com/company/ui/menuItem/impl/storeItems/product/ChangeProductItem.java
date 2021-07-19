@@ -3,6 +3,7 @@ package com.company.ui.menuItem.impl.storeItems.product;
 import com.company.exception.SaveDataException;
 import com.company.exception.WrongIdException;
 import com.company.facade.Facade;
+import com.company.models.DTO.ProductDTO;
 import com.company.models.ProductCategory;
 import com.company.ui.menuItem.MenuItem;
 
@@ -43,7 +44,7 @@ public class ChangeProductItem implements MenuItem {
             double price = scanner.nextDouble();
             scanner.skip("\\R");
 
-            facade.updateProduct(productId,name,description,amount,price,getCategories(scanner));
+            facade.updateProduct(new ProductDTO(productId,name,description,amount,price,getCategories(scanner)));
 
             System.out.println("Changed.");
         }
@@ -55,9 +56,9 @@ public class ChangeProductItem implements MenuItem {
         }
     }
 
-    private List<ProductCategory> getCategories(Scanner scanner){
+    private List<String> getCategories(Scanner scanner){
 
-        List<ProductCategory> categories = new ArrayList<>();
+        List<String> categories = new ArrayList<>();
 
         System.out.println("Categories: ");
         for (ProductCategory category: ProductCategory.values()){
@@ -68,10 +69,11 @@ public class ChangeProductItem implements MenuItem {
         String category;
         while (!(category = scanner.nextLine()).equals("-")){
             try {
-                categories.add(ProductCategory.valueOf(category.toUpperCase()));
+                ProductCategory.valueOf(category.toUpperCase());
+                categories.add(category.toUpperCase());
             }
             catch (IllegalArgumentException exception){
-                System.out.println("Invalid input.");
+                System.out.println("Invalid category.");
             }
         }
 

@@ -3,6 +3,7 @@ package com.company.ui.menuItem.impl.customerItems;
 import com.company.exception.SaveDataException;
 import com.company.exception.WrongIdException;
 import com.company.facade.Facade;
+import com.company.models.DTO.CustomerDTO;
 import com.company.ui.menuItem.MenuItem;
 
 import java.util.InputMismatchException;
@@ -39,7 +40,7 @@ public class ChangeCustomerItem implements MenuItem {
             System.out.print("Additional information: ");
             additionalInformation = scanner.nextLine();
 
-            facade.updateCustomer(name,additionalInformation,id);
+            facade.updateCustomer(new CustomerDTO(name,additionalInformation,id));
 
             System.out.println("Updated.");
         }

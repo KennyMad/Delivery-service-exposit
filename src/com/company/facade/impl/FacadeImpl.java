@@ -1,6 +1,5 @@
 package com.company.facade.impl;
 
-import com.company.constants.Constants;
 import com.company.exception.SaveDataException;
 import com.company.exception.InvalidAttributeException;
 import com.company.exception.WrongIdException;
@@ -11,6 +10,7 @@ import com.company.models.DTO.mapper.CustomerMapper;
 import com.company.models.DTO.mapper.OrderMapper;
 import com.company.models.DTO.mapper.ProductMapper;
 import com.company.models.DTO.mapper.StoreMapper;
+import com.company.utils.impl.Properties;
 import com.company.service.CustomerService;
 import com.company.service.OrderService;
 import com.company.service.ProductService;
@@ -133,18 +133,18 @@ public class FacadeImpl implements Facade {
     public void saveData() throws SaveDataException {
         fileUtil.save(customerService.getCustomerList().stream()
                 .map(CustomerMapper.CUSTOMER_MAPPER::customerDTOtoCustomer)
-                .collect(Collectors.toList()), Constants.CUSTOMERS_FILE);
+                .collect(Collectors.toList()), Properties.getCustomerFile());
 
         fileUtil.save(orderService.getOrderList().stream()
                 .map(OrderMapper.ORDER_MAPPER::orderDTOtoOrder)
-                .collect(Collectors.toList()), Constants.ORDERS_FILE);
+                .collect(Collectors.toList()), Properties.getOrderFile());
 
         fileUtil.save(storeService.getStoreList().stream()
                 .map(StoreMapper.STORE_MAPPER::storeDTOtoStore)
-                .collect(Collectors.toList()), Constants.STORE_FILE);
+                .collect(Collectors.toList()), Properties.getStoreFile());
 
         fileUtil.save(productService.getProductList().stream()
                 .map(ProductMapper.PRODUCT_MAPPER::productDTOtoProduct)
-                .collect(Collectors.toList()), Constants.PRODUCT_FILE);
+                .collect(Collectors.toList()), Properties.getProductFile());
     }
 }

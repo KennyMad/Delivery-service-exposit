@@ -1,6 +1,5 @@
 package com.company.utils.impl;
 
-import com.company.constants.Constants;
 import com.company.exception.LoadDataException;
 import com.company.exception.SaveDataException;
 import com.company.models.Customer;
@@ -27,6 +26,9 @@ public class FileUtilImpl implements FileUtil {
     public void save(Collection data, String fileName) throws SaveDataException {
         Gson gson = new Gson();
 
+        if (fileName == null)
+            throw new SaveDataException("Invalid file name");
+
         try (FileWriter writer = new FileWriter(fileName)){
             writer.write(gson.toJson(data));
         }
@@ -39,7 +41,7 @@ public class FileUtilImpl implements FileUtil {
     public CustomerDAO loadCustomers() {
         List<Customer> customerList;
         try {
-            customerList = load(Constants.CUSTOMERS_FILE, new TypeToken<ArrayList<Customer>>(){}.getType());
+            customerList = load(Properties.getCustomerFile(), new TypeToken<ArrayList<Customer>>(){}.getType());
         }
         catch (FileNotFoundException | LoadDataException exception){
             customerList = new ArrayList<>();
@@ -51,7 +53,7 @@ public class FileUtilImpl implements FileUtil {
     public OrderDAO loadOrders() {
         List<Order> orderList;
         try {
-            orderList = load(Constants.ORDERS_FILE, new TypeToken<ArrayList<Order>>(){}.getType());
+            orderList = load(Properties.getOrderFile(), new TypeToken<ArrayList<Order>>(){}.getType());
         }
         catch (FileNotFoundException | LoadDataException exception){
             orderList = new ArrayList<>();
@@ -63,7 +65,7 @@ public class FileUtilImpl implements FileUtil {
     public StoreDAO loadStores() {
         List<Store> storeList;
         try {
-            storeList = load(Constants.STORE_FILE, new TypeToken<ArrayList<Store>>(){}.getType());
+            storeList = load(Properties.getStoreFile(), new TypeToken<ArrayList<Store>>(){}.getType());
         }
         catch (FileNotFoundException | LoadDataException exception){
             storeList = new ArrayList<>();
@@ -75,7 +77,7 @@ public class FileUtilImpl implements FileUtil {
     public ProductDAO loadProducts() {
         List<Product> productList;
         try {
-            productList = load(Constants.PRODUCT_FILE, new TypeToken<ArrayList<Product>>() {}.getType());
+            productList = load(Properties.getProductFile(), new TypeToken<ArrayList<Product>>() {}.getType());
         } catch (FileNotFoundException | LoadDataException exception) {
             productList = new ArrayList<>();
         }
@@ -84,6 +86,9 @@ public class FileUtilImpl implements FileUtil {
 
     private List load (String fileName, Type type) throws FileNotFoundException, LoadDataException{
         Gson gson = new Gson();
+
+        if (fileName == null)
+            throw new FileNotFoundException("Invalid file name");
 
         if (!new File(fileName).exists())
             throw new FileNotFoundException(fileName);
